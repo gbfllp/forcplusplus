@@ -7,11 +7,11 @@ int score = 0; // Quando chegar em 5, o usuário deve perder
 
 void clearConsole()
 {
-    #ifdef _WIN32
-        system("cls"); // Comando para Windows
-    #else
-        system("clear"); // Comando para Linux/macOS
-    #endif
+#ifdef _WIN32
+    system("cls"); // Comando para Windows
+#else
+    system("clear"); // Comando para Linux/macOS
+#endif
 }
 
 struct Letter
@@ -64,6 +64,69 @@ void showWord(Letter *head)
     }
 }
 
+void showHanging()
+{
+    cout << "Tentativas restantes: " << 5 - score << endl;
+    if (score == 0)
+    {
+        cout << "_______" << endl;
+        cout << "|     |" << endl;
+        cout << "|" << endl;
+        cout << "|" << endl;
+        cout << "|" << endl;
+        cout << "|" << endl;
+    }
+    else if (score == 1)
+    {
+        cout << "_______" << endl;
+        cout << "|     |" << endl;
+        cout << "|   (o-o)" << endl;
+        cout << "|" << endl;
+        cout << "|" << endl;
+        cout << "|" << endl;
+    }
+    else if (score == 2)
+    {
+        cout << "_______" << endl;
+        cout << "|     |" << endl;
+        cout << "|   (o-o)" << endl;
+        cout << "|    /|\\" << endl;
+        cout << "|" << endl;
+        cout << "|" << endl;
+    }
+    else if (score == 3)
+    {
+        cout << "_______" << endl;
+        cout << "|     |" << endl;
+        cout << "|   (o-o)" << endl;
+        cout << "|    /|\\" << endl;
+        cout << "|     |   " << endl;
+        cout << "|" << endl;
+    }
+    else if (score == 4)
+    {
+        cout << "_______" << endl;
+        cout << "|     |" << endl;
+        cout << "|   (o-o)" << endl;
+        cout << "|    /|\\" << endl;
+        cout << "|     |   " << endl;
+        cout << "|    /" << endl;
+    }
+    else if (score == 5)
+    {
+        cout << "_______" << endl;
+        cout << "|     |" << endl;
+        cout << "|   (x-x)" << endl;
+        cout << "|    /|\\" << endl;
+        cout << "|     |   " << endl;
+        cout << "|    / \\ " << endl;
+    }
+    else
+    {
+        cout << "Erro na quantidade de pontos!";
+    }
+}
+
 struct MissedLetter
 { // Estrutura para armazenar cada letra errada
     char letter;
@@ -77,8 +140,8 @@ MissedLetter *storeMissedWord(const string &word)
     for (char c : word)
     {
         MissedLetter *newMissedLetter = new MissedLetter; // Alocar nova letra
-        newMissedLetter->letter = tolower(c); // Armazenar letra em minuscula
-        newMissedLetter->next = nullptr; // Mostra o caminho para próxima letra
+        newMissedLetter->letter = tolower(c);             // Armazenar letra em minuscula
+        newMissedLetter->next = nullptr;                  // Mostra o caminho para próxima letra
 
         if (head == nullptr)
         {
@@ -93,6 +156,22 @@ MissedLetter *storeMissedWord(const string &word)
     }
 
     return head;
+}
+
+void showMissedLetters(MissedLetter *head)
+{
+    cout << "Letras erradas: ";
+    MissedLetter *current = head;
+    while (current != nullptr)
+    {
+        cout << current->letter << " ";
+        current = current->next;
+    }
+    cout << endl;
+}
+
+bool isLetter(char letter) {
+        return std::isalpha(letter) && (letter == std::tolower(letter)) && (letter >= 'a' && letter <= 'z' || letter >= 'A' && letter <= 'Z');
 }
 
 bool guessLetter(Letter *head, char guess)
@@ -111,22 +190,48 @@ bool guessLetter(Letter *head, char guess)
     return found;
 }
 
-void startGame(Letter *chosenWord)
+bool hasGuessedAll(Letter *head)
 {
+    Letter *current = head;
+    while (current != nullptr)
+    {
+        if (!current->isGuessed)
+        {
+            return false;
+        }
+        current = current->next;
+    }
+    return true;
+}
+
+void startGame(Letter *chosenWord)
+{   
+    MissedLetter *missedLetters = nullptr;
     char guess;
     // comparar score, se maior que 5, sai do loop e mensagem de perdeu
     while (score < 5)
     {
-        // mostrar o boneco
-        cout << "Digite uma letra!" << endl;
+        showHanging();
+        showWord(chosenWord);
+        showMissedLetters(missedLetters);
+
+        if(hasGuessedAll(cho))
+
+        cout << "\nDigite uma letra!" << endl;
         cin >> guess;
-        guess = tolower(guess); // Deixa minúscula
+        if(isLetter(guess)) {
+            guess = tolower(guess); // Deixa minúscula
+            clearConsole();
+        } else {
+            clearConsole();
+            cout<<"O caractere digitado deve ser uma letra sem acento! ";// Mensagem de erro 
+        }
 
-        //if (guess ==)
-            // quando a letra foi escolhida, verificar se ela está na palavra
-            // se tiver, mudar o parametro isGuessed daquela letra pra verdadeiro
+        
 
-            showWord(chosenWord);
+        // quando a letra foi escolhida, verificar se ela está na palavra
+        // se tiver, mudar o parametro isGuessed daquela letra pra verdadeiro
+
         // se resta mais chances e todos os isGuessed estão true:
         // mensagem que ganhou
         // se não, chama a função startGame(Letter *chosenWord) de novo
@@ -141,17 +246,6 @@ void startGame(Letter *chosenWord)
     }
     cout << endl;
 }
-
-/*void showAvatar()
-{
-    cout << "_______" << endl;
-    cout << "|     |" << endl;
-    cout << "|   (o-o)" << endl;
-    cout << "|    /|\\" << endl;
-    cout << "|     |   " << endl;
-    cout << "|    / \\ " << endl;
-}
-*/
 
 int main()
 {
