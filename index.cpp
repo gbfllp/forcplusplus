@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int score = 0; // Quando chegar em 5, o usuário deve perder
+int score = 0; // Pontuação do jogador. Quando chegar em 5, o usuário perde o jogo.
 
 void clearConsole()
 {
@@ -13,20 +13,21 @@ void clearConsole()
 #else
     system("clear"); // Comando para Linux/macOS
 #endif
-cout << "========== JOGO DA FORCA ==========" << endl;
+cout << "========== JOGO DA FORCA ==========" << endl; // Exibe o título do jogo após limpar o console.
+
 }
 
 struct Letter
 { // Estrutura para armazenar cada caractere da palavra escolhida
-    char letter;
-    bool isGuessed;
-    Letter *next;
+    char letter; // Armazena o caractere da letra.
+    bool isGuessed; // Indica se a letra foi adivinhada pelo jogador.
+    Letter *next; // Ponteiro para a próxima letra na lista encadeada.
 };
 
 Letter *storeWord(const string &word)
 { // Função para criar uma lista com as letras da palavra
-    Letter *head = nullptr;
-    Letter *tail = nullptr;
+    Letter *head = nullptr; // Ponteiro para o início da lista (primeira letra).
+    Letter *tail = nullptr; // Ponteiro para o final da lista (última letra).
     for (char c : word)
     {
         Letter *newLetter = new Letter; // Alocar nova letra
@@ -35,7 +36,7 @@ Letter *storeWord(const string &word)
         newLetter->next = nullptr;      // Mostra o caminho para próxima letra
 
         if (head == nullptr)
-        {
+        { // Verifica se a lista ainda está vazia.
             head = newLetter; // Detecta se é a primeira letra
         }
         else
@@ -43,29 +44,29 @@ Letter *storeWord(const string &word)
             tail->next = newLetter; // Se a lista não está vazia, a nova letra é adicionada ao final
         }
 
-        tail = newLetter; // Muda a tail para a nova letra
+        tail = newLetter; // Atualiza o ponteiro `tail` para a nova letra.
     }
 
-    return head;
+    return head; // Retorna o ponteiro para o início da lista encadeada.
 }
 
 void showWord(Letter *head)
-{
-    Letter *current = head;
+{ // Função que exibe a palavra com letras adivinhadas ou espaços em branco.
+    Letter *current = head; // Ponteiro para percorrer a lista de letras.
     while (current != nullptr)
     {
         if (current->isGuessed)
-        {
-            cout << current->letter << " ";
+        { // Verifica se a letra foi adivinhada.
+            cout << current->letter << " "; // Exibe a letra.
         }
         else
         {
-            cout << "_ ";
+            cout << "_ "; // Exibe um espaço em branco no lugar da letra.
         }
-        current = current->next;
+        current = current->next; // Avança para a próxima letra da lista.
     }
 }
-
+// -------------------------------------------------------------------------------------------Comentários até aqui
 void showHanging()
 {
     cout << "Tentativas restantes: " << 5 - score << endl;
