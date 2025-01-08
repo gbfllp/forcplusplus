@@ -13,7 +13,7 @@ void clearConsole()
 #else
     system("clear"); // Comando para Linux/macOS
 #endif
-cout << "\n========== JOGO DA FORCA ==========" << endl;
+cout << "========== JOGO DA FORCA ==========" << endl;
 }
 
 struct Letter
@@ -173,7 +173,7 @@ void showMissedLetters(MissedLetter *head)
 }
 
 bool isLetter(char letter) {
-        return std::isalpha(letter) && (letter == std::tolower(letter)) && (letter >= 'a' && letter <= 'z' || letter >= 'A' && letter <= 'Z');
+    return (std::isalpha(letter) && (letter == std::tolower(letter)) && (letter >= 'a') && (letter <= 'z')) || ((letter >= 'A') && (letter <= 'Z'));
 }
 
 bool guessLetter(Letter *head, char guess)
@@ -333,7 +333,7 @@ void menu() {
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
-    cout << "\n========== JOGO DA FORCA ==========" << endl;
+    clearConsole();
     menu();
     string word;
 
@@ -343,7 +343,7 @@ int main()
         if(containsAccent(word)){
             cout << "Tente novamente com uma palavra sem acentos ou caracteres especiais." << endl;
         }
-    }while(containsAccent(word));
+    } while(containsAccent(word));
     
     Letter *chosenWord = storeWord(word);
     cout << "JOGADOR 1 - Palavra escolhida com sucesso! Pressione ENTER para iniciar o jogo de JOGADOR 2" << endl;
