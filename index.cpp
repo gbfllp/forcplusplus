@@ -1,6 +1,5 @@
 #include <iostream>
 #include <locale>
-#include <unordered_set>
 
 using namespace std;
 
@@ -242,7 +241,8 @@ bool containsAccent(const string &word) {
 void startGame(Letter *chosenWord) {
     MissedLetter *missedLetters = nullptr; // Lista encadeada para armazenar letras erradas.
     char guess; // Variável para armazenar a letra adivinhada pelo jogador.
-    unordered_set<char> guessedLetters; // Conjunto para armazenar letras já tentadas
+    char guessedLetters[26]; // Array para armazenar letras já tentadas
+    int guessedCount = 0; // Contador de letras tentadas
 
     // Loop principal do jogo que continua enquanto o jogador não perder (score < 5).
     while (score < 5) {
@@ -258,13 +258,21 @@ void startGame(Letter *chosenWord) {
             guess = tolower(guess); // Deixa minúscula
 
             // Verifica se a letra já foi tentada anteriormente.
-            if (guessedLetters.find(guess) != guessedLetters.end()) {
+            bool alreadyGuessed = false;
+            for (int i = 0; i < guessedCount; i++) {
+                if (guessedLetters[i] == guess) {
+                    alreadyGuessed = true; // A letra já foi tentada
+                    break;
+                }
+            }
+
+            if (alreadyGuessed) {
                 clearConsole(); // Limpa o console.
                 cout << "Letra repetida, tente novamente! ";
                 continue; // Se já foi tentada, pede nova letra
             }
 
-            guessedLetters.insert(guess); // Adiciona a letra ao conjunto de letras tentadas
+            guessedLetters[guessedCount++] = guess; // Adiciona a letra ao array de letras tentadas
 
             // Verificar se a letra está na palavra
             // Se a letra não está na palavra, incrementa o score e armazena a letra errada
@@ -330,12 +338,6 @@ void menu() {
             clearConsole(); // Limpa o console antes de sair.
             cout << "Obrigado por jogar!" << endl;
             exit(0); // Encerra o programa.
-        // Easter egg para os mais testadores.
-        case 4:
-            clearConsole();
-            cout << "Obrigado pelos ensinamentos :D" << endl;
-            menu(); // Retorna ao menu principal.
-            break;
         // Caso o jogador insira um número inválido, exibe uma mensagem de erro.
         default:
             clearConsole(); // Limpa o console para exibir a mensagem de erro.
