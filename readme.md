@@ -19,6 +19,8 @@ caso erre terá mais um erro adicionado, caso chegue a 5 letras erradas, o jogad
 
 ## Como Executar o Projeto
 
+Por padrão, o projeto possui os arquivos pré-compilados na pasta "output". Todavia, é possível compilá-lo por conta própria seguindo os passos abaixo:
+
 Certifique-se de ter um compilador C++ instalado.
 
 *É necessário ter um compilador como o g++ (parte do GCC) ou equivalente.*

@@ -330,10 +330,10 @@ void menu() {
             clearConsole(); // Limpa o console antes de sair.
             cout << "Obrigado por jogar!" << endl;
             exit(0); // Encerra o programa.
-        // Caso o jogador insira o número 4, exibe uma mensagem especial.
+        // Easter egg para os mais testadores.
         case 4:
             clearConsole();
-            cout << "Obrigado pelos ensinamentos :D" << endl; // Mensagem especial opcional.
+            cout << "Obrigado pelos ensinamentos :D" << endl;
             menu(); // Retorna ao menu principal.
             break;
         // Caso o jogador insira um número inválido, exibe uma mensagem de erro.
@@ -345,14 +345,9 @@ void menu() {
     }
 }
 
-// Função principal do programa.
-int main() {
-    setlocale(LC_ALL, "Portuguese"); // Configura o idioma para exibir caracteres acentuados corretamente.
-    clearConsole(); // Limpa o console ao iniciar o jogo.
-    menu(); // Exibe o menu principal.
-    string word; // Variável para armazenar a palavra escolhida pelo jogador 1.
+string chooseWord(Letter *&chosenWord) {
+    string word;
 
-    // Solicita uma palavra ao jogador 1, garantindo que não tenha acentos ou caracteres especiais.
     do {
         cout << "JOGADOR 1 - Escolha uma palavra a ser adivinhada (utilize apenas letras e sem acento): ";
         cin >> word;
@@ -362,13 +357,25 @@ int main() {
         }
     } while (containsAccent(word)); // Repete até que o jogador 1 forneça uma palavra válida.
 
-    Letter *chosenWord = storeWord(word); // Cria a lista de letras da palavra escolhida.
+    chosenWord = storeWord(word); // Cria a lista de letras da palavra escolhida.
     cout << "JOGADOR 1 - Palavra escolhida com sucesso! Pressione ENTER para iniciar o jogo de JOGADOR 2" << endl;
     cin.ignore();
     cin.get(); // Aguarda o jogador pressionar ENTER para continuar.
 
     clearConsole(); // Limpa o console antes de iniciar o jogo.
 
+    return word; // Retorna a palavra escolhida pra função da main.
+}
+
+int main() {
+    setlocale(LC_ALL, "Portuguese"); // Configura o idioma para exibir caracteres acentuados corretamente.
+    clearConsole(); // Limpa o console ao iniciar o jogo.
+    menu(); // Exibe o menu principal.
+
+    Letter *chosenWord = nullptr; // Pré-aloca memória para a palavra escolhida.
+    string word = chooseWord(chosenWord); // Solicita uma palavra ao jogador 1, garantindo que não tenha acentos ou caracteres especiais.
     startGame(chosenWord); // Inicia o jogo, passando a palavra escolhida.
+
     cout << "A palavra escolhida foi " << word << "." << endl; // Exibe a palavra após o término do jogo.
+    return 0;
 }
