@@ -15,52 +15,23 @@ void clearConsole() {
     cout << "========== JOGO DA FORCA ==========" << endl; // Exibe o título do jogo após limpar o console.
 }
 
-// Estrutura para armazenar cada caractere da palavra escolhida
-struct Letter {
-    char letter; // Armazena o caractere da letra.
-    bool isGuessed; // Indica se a letra foi adivinhada pelo jogador.
-    Letter *next; // Ponteiro para a próxima letra na lista encadeada.
-};
-
-// Função para criar uma lista com as letras da palavra escolhida
-Letter *storeWord(const string &word) {
-    Letter *head = nullptr; // Ponteiro para o início da lista (primeira letra).
-    Letter *tail = nullptr; // Ponteiro para o final da lista (última letra).
-
-    // Para cada caractere da palavra, cria uma nova letra e adiciona na lista
-    for (char c: word) {
-        Letter *newLetter = new Letter; // Alocar nova letra
-        newLetter->letter = tolower(c); // Armazenar letra em minúscula
-        newLetter->isGuessed = false; // Deixa não adivinhado como falso por padrão
-        newLetter->next = nullptr; // Inicializa o ponteiro para a próxima letra como nullptr
-
-        // Verificar se a lista ainda está vazia.
-        if (head == nullptr) {
-            head = newLetter; // Define o ponteiro da letra de início da lista encadeada como a nova letra.
-        } else {
-            tail->next = newLetter; // Se a lista não está vazia, a nova letra é adicionada ao final
-        }
-
-        tail = newLetter; // Atualiza o ponteiro do fim da lista encadeada para a nova letra.
-    }
-
-    return head; // Retorna o ponteiro para o início da lista encadeada.
+// Função que verifica se o caractere fornecido é uma letra válida.
+bool isLetter(char letter) {
+    return ((letter >= 'a') && (letter <= 'z')) || // Verifica se está no intervalo de 'a' a 'z'.
+           ((letter >= 'A') && (letter <= 'Z')); // Ou no intervalo de 'A' a 'Z'.
 }
 
-// Função que exibe a palavra com letras adivinhadas ou espaços em branco.
-void showWord(Letter *head) {
-    Letter *current = head; // Ponteiro para percorrer a lista de letras.
-
-    while (current != nullptr) {
-        // Verifica se a letra foi adivinhada.
-        if (current->isGuessed) {
-            cout << current->letter << " "; // Exibe a letra.
-        } else {
-            cout << "_ "; // Exibe um espaço em branco no lugar da letra.
-        }
-
-        current = current->next; // Avança para a próxima letra da lista.
+// Função que verifica se a palavra contém caracteres que não são letras.
+bool isValidWord(const string &word) {
+    // Percorre cada caractere da palavra.
+    for (char c: word) {
+        // Verifica se o caractere não é uma letra válida.
+        if (!isLetter(c)) {
+            return true; // Retorna verdadeiro se encontrar um caractere inválido.
+        };
     }
+
+    return false; // Retorna falso se todos os caracteres forem letras.
 }
 
 // Função responsável por exibir o estado atual do boneco na forca com base na pontuação (erros).
@@ -121,36 +92,82 @@ void showHanging() {
     }
 }
 
+// Estrutura para armazenar cada caractere da palavra escolhida
+struct Letter {
+    char letter; // Armazena o caractere da letra.
+    bool isGuessed; // Indica se a letra foi adivinhada pelo jogador.
+    Letter *next; // Ponteiro para a próxima letra na lista encadeada.
+};
+
+// Função para criar uma lista com as letras da palavra escolhida
+Letter *storeWord(const string &word) {
+    Letter *head = nullptr; // Ponteiro para o início da lista (primeira letra).
+    Letter *tail = nullptr; // Ponteiro para o final da lista (última letra).
+
+    // Para cada caractere da palavra, cria uma nova letra e adiciona na lista
+    for (char c: word) {
+        Letter *newLetter = new Letter; // Alocar nova letra
+        newLetter->letter = tolower(c); // Armazenar letra em minúscula
+        newLetter->isGuessed = false; // Deixa não adivinhado como falso por padrão
+        newLetter->next = nullptr; // Inicializa o ponteiro para a próxima letra como nullptr
+
+        // Verificar se a lista ainda está vazia.
+        if (head == nullptr) {
+            head = newLetter; // Define o ponteiro da letra de início da lista encadeada como a nova letra.
+        } else {
+            tail->next = newLetter; // Se a lista não está vazia, a nova letra é adicionada ao final
+        }
+
+        tail = newLetter; // Atualiza o ponteiro do fim da lista encadeada para a nova letra.
+    }
+
+    return head; // Retorna o ponteiro para o início da lista encadeada.
+}
+
+// Função para o jogador escolher uma palavra a ser adivinhada.
+string chooseWord(Letter *&chosenWord) {
+    string word;
+
+    do {
+        cout << "JOGADOR 1 - Escolha uma palavra a ser adivinhada (utilize apenas letras e sem acento): ";
+        cin >> word;
+        if (isValidWord(word)) {
+            // Verifica se a palavra contém caracteres inválidos.
+            cout << "Tente novamente com uma palavra sem acentos ou caracteres especiais." << endl;
+        }
+    } while (isValidWord(word)); // Repete até que o jogador 1 forneça uma palavra válida.
+
+    chosenWord = storeWord(word); // Cria a lista de letras da palavra escolhida.
+    cout << "JOGADOR 1 - Palavra escolhida com sucesso! Pressione ENTER para iniciar o jogo de JOGADOR 2" << endl;
+    cin.ignore();
+    cin.get(); // Aguarda o jogador pressionar ENTER para continuar.
+
+    clearConsole(); // Limpa o console antes de iniciar o jogo.
+
+    return word; // Retorna a palavra escolhida pra função da main.
+}
+
+// Função que exibe a palavra com letras adivinhadas ou espaços em branco.
+void showWord(Letter *head) {
+    Letter *current = head; // Ponteiro para percorrer a lista de letras.
+
+    while (current != nullptr) {
+        // Verifica se a letra foi adivinhada.
+        if (current->isGuessed) {
+            cout << current->letter << " "; // Exibe a letra.
+        } else {
+            cout << "_ "; // Exibe um espaço em branco no lugar da letra.
+        }
+
+        current = current->next; // Avança para a próxima letra da lista.
+    }
+}
+
 // Estrutura para armazenar cada letra errada
 struct MissedLetter {
     char letter; // Armazena o caractere da letra errada.
     MissedLetter *next; // Ponteiro para a próxima letra errada na lista encadeada.
 };
-
-// Função que armazena as letras erradas como uma lista encadeada.
-MissedLetter *storeMissedWord(const string &word) {
-    MissedLetter *head = nullptr; // Ponteiro para o início da lista (primeira letra errada).
-    MissedLetter *tail = nullptr; // Ponteiro para o final da lista (última letra errada).
-
-    // Percorre a string fornecida para armazenar cada letra.
-    for (char c: word) {
-        MissedLetter *newMissedLetter = new MissedLetter; // Aloca dinamicamente uma nova letra errada.
-        newMissedLetter->letter = tolower(c); // Armazenar letra em minuscula.
-        newMissedLetter->next = nullptr; // Inicializa o ponteiro para a próxima letra errada como nullptr
-
-        // Verifica se a lista ainda está vazia.
-        if (head == nullptr) {
-            head = newMissedLetter;
-            // Define o ponteiro da letra de início da lista encadeada como a letra errada criada.
-        } else {
-            tail->next = newMissedLetter; // Se a lista não está vazia, a nova letra é adicionada ao final
-        }
-
-        tail = newMissedLetter; // Atualiza o ponteiro do fim da lista encadeada para a nova letra.
-    }
-
-    return head; // Retorna o ponteiro para o início da lista encadeada.
-}
 
 // Função que exibe todas as letras erradas armazenadas na lista.
 void showMissedLetters(MissedLetter *head) {
@@ -164,14 +181,6 @@ void showMissedLetters(MissedLetter *head) {
     }
 
     cout << endl; // Quebra de linha após exibir todas as letras erradas.
-}
-
-// Função que verifica se o caractere fornecido é uma letra válida.
-bool isLetter(char letter) {
-    return (std::isalpha(letter) && // Verifica se o caractere é uma letra do alfabeto.
-            (letter == std::tolower(letter)) && // Garante que a letra esteja em minúscula.
-            (letter >= 'a') && (letter <= 'z')) || // Verifica se está no intervalo de 'a' a 'z'.
-           ((letter >= 'A') && (letter <= 'Z')); // Ou no intervalo de 'A' a 'Z'.
 }
 
 // Função que verifica se a letra adivinhada está na palavra e marca como adivinhada se encontrada.
@@ -206,35 +215,6 @@ bool hasGuessedAll(Letter *head) {
     }
 
     return true; // Retorna verdadeiro se todas as letras foram adivinhadas.
-}
-
-// Função que altera o estado isGuessed de cada letra
-void updateGuessedLetters(Letter *head, char guess) {
-    Letter *current = head; // Ponteiro para percorrer a lista de letras.
-
-    // Percorre a lista de letras.
-    while (current != nullptr) {
-        // Verifica se a letra atual é igual à adivinhada.
-        if (current->letter == guess) {
-            current->isGuessed = true; // Marca a letra como adivinhada.
-            break; // Interrompe o loop após encontrar a letra.
-        }
-
-        current = current->next; // Avança para a próxima letra na lista.
-    }
-}
-
-// Função que verifica se a palavra contém caracteres que não são letras.
-bool containsAccent(const string &word) {
-    // Percorre cada caractere da palavra.
-    for (char c: word) {
-        // Verifica se o caractere não é uma letra válida.
-        if (!isLetter(c)) {
-            return true; // Retorna verdadeiro se encontrar um caractere inválido.
-        };
-    }
-
-    return false; // Retorna falso se todos os caracteres forem letras.
 }
 
 // Função principal que controla o fluxo do jogo.
@@ -324,9 +304,7 @@ void menu() {
         case 2:
             clearConsole(); // Limpa o console antes de exibir as regras.
             cout << "REGRAS DO JOGO:" << endl;
-            cout <<
-                    "- O JOGADOR 1 escolhe uma palavra sem caracteres especiais ou acentos.\n- O JOGADOR 2 tenta adivinhar a palavra, letra por letra.\n- Para cada erro, aparece um novo desenho complementando o boneco da forca.\n- O jogo termina quando o JOGADOR 2 adivinha a palavra ou esgota as 5 tentativas."
-                    << endl;
+            cout << "- O JOGADOR 1 escolhe uma palavra sem caracteres especiais ou acentos.\n- O JOGADOR 2 tenta adivinhar a palavra, letra por letra.\n- Para cada erro, aparece um novo desenho complementando o boneco da forca.\n- O jogo termina quando o JOGADOR 2 adivinha a palavra ou esgota as 5 tentativas." << endl;
             cout << "Pressione ENTER para voltar ao menu..." << endl;
             cin.ignore();
             cin.get(); // Aguarda o jogador pressionar ENTER para voltar ao menu.
@@ -347,37 +325,16 @@ void menu() {
     }
 }
 
-string chooseWord(Letter *&chosenWord) {
-    string word;
-
-    do {
-        cout << "JOGADOR 1 - Escolha uma palavra a ser adivinhada (utilize apenas letras e sem acento): ";
-        cin >> word;
-        if (containsAccent(word)) {
-            // Verifica se a palavra contém caracteres inválidos.
-            cout << "Tente novamente com uma palavra sem acentos ou caracteres especiais." << endl;
-        }
-    } while (containsAccent(word)); // Repete até que o jogador 1 forneça uma palavra válida.
-
-    chosenWord = storeWord(word); // Cria a lista de letras da palavra escolhida.
-    cout << "JOGADOR 1 - Palavra escolhida com sucesso! Pressione ENTER para iniciar o jogo de JOGADOR 2" << endl;
-    cin.ignore();
-    cin.get(); // Aguarda o jogador pressionar ENTER para continuar.
-
-    clearConsole(); // Limpa o console antes de iniciar o jogo.
-
-    return word; // Retorna a palavra escolhida pra função da main.
-}
-
 int main() {
     setlocale(LC_ALL, "Portuguese"); // Configura o idioma para exibir caracteres acentuados corretamente.
     clearConsole(); // Limpa o console ao iniciar o jogo.
     menu(); // Exibe o menu principal.
 
     Letter *chosenWord = nullptr; // Pré-aloca memória para a palavra escolhida.
-    string word = chooseWord(chosenWord); // Solicita uma palavra ao jogador 1, garantindo que não tenha acentos ou caracteres especiais.
+    string word = chooseWord(chosenWord); // Define "word" como a palavra escolhida, para facilitar sua exibição quando terminar o jogo.
     startGame(chosenWord); // Inicia o jogo, passando a palavra escolhida.
 
     cout << "A palavra escolhida foi " << word << "." << endl; // Exibe a palavra após o término do jogo.
+    showHanging();
     return 0;
 }
