@@ -1,0 +1,61 @@
+\documentclass[12pt,a4paper]{article}
+
+% --- Pacotes Essenciais ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{top=3cm, bottom=2cm, left=3cm, right=2cm}
+\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\begin{document}
+
+\section{Introdução}
+\label{sec:introducao}
+
+\subsection{Contexto: desmatamento no Cerrado e limitações do monitoramento anual (PRODES/DETER)}
+\label{subsec:contexto}
+
+O Cerrado constitui a segunda maior formação vegetal da América do Sul, ocupando aproximadamente 2 milhões de km² e abrigando cerca de 5\% da biodiversidade mundial, sendo reconhecido como um dos 36 \textit{hotspots} globais de biodiversidade \citep{myers2000biodiversity}. Apesar de sua extrema relevância ecológica e hidrológica — abrigando as nascentes de três das maiores bacias hidrográficas do continente (Tocantins-Araguaia, São Francisco e Paraná-Prata) —, o bioma tem enfrentado pressão antrópica crescente nas últimas décadas. Esse processo é impulsionado sobretudo pela expansão da fronteira agrícola, pela pecuária extensiva, pela grilagem de terras e pelo desmatamento ilegal, resultando na perda acumulada de cerca de 50\% de sua cobertura nativa original, com taxas anuais de supressão que, em determinados períodos, superaram as observadas na Amazônia \citep{mapbiomas2023}.
+
+O monitoramento oficial do desmatamento no Brasil é conduzido pelo Instituto Nacional de Pesquisas Espaciais (INPE) por meio de dois sistemas complementares: o PRODES (\textit{Programa de Monitoramento do Desflorestamento da Amazônia e Demais Biomas}), que produz estimativas anuais consolidadas de corte raso, e o DETER (\textit{Sistema de Detecção de Desmatamento em Tempo Real}), voltado à emissão de alertas de supressão vegetal para suporte à fiscalização ambiental. Embora ambos os sistemas tenham desempenhado um papel histórico e fundamental no combate ao desmatamento na floresta tropical úmida, eles apresentam limitações estruturais significativas quando aplicados às dinâmicas do Cerrado. O PRODES, devido à sua periodicidade estritamente anual, é incapaz de capturar eventos de supressão vegetal em escalas temporais subanuais, inviabilizando ações tempestivas de interrupção do dano ambiental. Por sua vez, o DETER, embora forneça alertas com maior frequência temporal, foi concebido para fisionomias de floresta densa. Quando aplicado às fisionomias savânicas do Cerrado, seu desempenho é comprometido pela marcante sazonalidade fenológica do bioma — caracterizada por variações acentuadas de biomassa foliar entre as estações seca e chuvosa —, o que frequentemente induz a confusões espectrais e ao surgimento de falsos positivos \citep{shimabukuro2012deter}.
+
+Essa resposta espectral distinta representa um desafio metodológico crítico. Enquanto na floresta tropical úmida o corte raso gera uma alteração abrupta e persistente do sinal espectral, nas formações savânicas a senescência e a perda de folhagem na estação seca mimetizam, em diversas bandas do espectro óptico, a resposta de áreas antropizadas. Portanto, o desenvolvimento de métodos de detecção contínua e precisa no Cerrado permanece um problema em aberto, com implicações diretas na eficácia das políticas públicas de conservação e nos compromissos internacionais de mitigação de emissões de gases de efeito estufa.
+
+\subsection{Sensoriamento remoto e aprendizado profundo aplicados a séries temporais Sentinel-2}
+\label{subsec:sr-dl}
+
+O advento de constelações de satélites com alta resolução espacial e reduzido tempo de revisita transformou o panorama do monitoramento ambiental por sensoriamento remoto. Destaca-se o programa Copernicus, promovido pela Agência Espacial Europeia (ESA), que disponibilizou as missões Sentinel-2. O sistema oferece resolução espacial de 10 a 20 metros, frequência de revisita de aproximadamente 5 dias (com a constelação operacional) e 13 bandas espectrais cobrindo o visível, o infravermelho próximo (NIR) e o infravermelho de ondas curtas (SWIR). Essas características viabilizam a montagem de séries temporais densas de imagens, permitindo acompanhar continuamente a dinâmica fenológica da vegetação nativa e identificar desvios bruscos associados a intervenções humanas \citep{drusch2012sentinel}.
+
+Paralelamente, o campo do aprendizado profundo (\textit{deep learning}) estabeleceu-se como a abordagem do estado da arte na extração automática de padrões complexos em dados de alta dimensão. Em sensoriamento remoto, arquiteturas como Redes Neurais Convolucionais (CNNs), Redes Recorrentes (LSTM, GRU), abordagens híbridas (ex.: ConvLSTM) e modelos baseados em \textit{Transformers} têm demonstrado elevada eficácia no mapeamento de mudanças de uso e cobertura do solo. Em particular, a arquitetura U-Net \citep{ronneberger2015unet} e suas variações (ex.: ResUNet, Attention U-Net) ganharam ampla aceitação em tarefas de segmentação semântica espacial por preservarem detalhes finos através de conexões de atalho (\textit{skip connections}), sendo adequadas para a delimitação precisa de polígonos de desmatamento. Por outro lado, modelos recorrentes e temporais possibilitam a modelagem explícita da dependência temporal em séries densas, permitindo diferenciar variações sazonais naturais de mudanças persistentes decorrentes do desmatamento \citep{rußwurm2018multi}.
+
+A integração entre séries temporais densas do Sentinel-2 e modelos de aprendizado profundo surge como uma estratégia promissora para superar as limitações dos sistemas operacionais tradicionais, potencialmente reduzindo falsos positivos e aumentando a taxa de atualização dos mapeamentos. Contudo, a aplicação prática dessas arquiteturas em ambientes savânicos heterogêneos ainda exige investigações aprofundadas.
+
+\subsection{Lacuna de pesquisa: escassez de métodos mensais validados em savana tropical}
+\label{subsec:lacuna}
+
+A despeito dos avanços na área, a literatura científica sobre detecção de desmatamento fundamentada em aprendizado profundo permanece marcadamente concentrada em ecossistemas de floresta tropical úmida, como a Bacia Amazônica, o Sudeste Asiático e a Bacia do Congo. Essa assimetria decorre, em parte, da maior facilidade de detecção do corte raso em dosséis densos e da priorização histórica dada à preservação das florestas tropicais contínuas.
+
+Em contrapartida, observa-se uma nítida escassez de métodos automáticos operando com granularidade temporal mensal validados especificamente para savanas tropicais — como o Cerrado — a partir de séries temporais de alta resolução espacial (Sentinel-2 a 10 metros). A forte heterogeneidade fisionômica do Cerrado (que abrange desde campos limpos até formações florestais como o cerradão) aliada à sua expressiva dinâmica fenológica cria assinaturas espectro-temporais complexas que não são adequadamente tratadas por modelos treinados e validados apenas em floresta úmida. Ademais, a literatura raramente aborda a validação espacial independente entre diferentes biomas, o tratamento rigoroso do desbalanceamento extremo de classes (poucos eventos de desmatamento frente à vasta área não alterada) e a mensuração da latência entre a ocorrência do evento e sua efetiva detecção. Evidência preliminar desta revisão (Seção~\ref{sec:resultados}) indica que, dos 7 estudos únicos incluídos, apenas 2 reportam métodos com granularidade mensal validados no Cerrado, o que reforça a pertinência da lacuna aqui identificada.
+
+\subsection{Objetivos da revisão e perguntas de pesquisa}
+\label{subsec:objetivos}
+
+O objetivo geral desta revisão sistemática é sintetizar e analisar criticamente a literatura científica publicada na última década (2016--2026) sobre a aplicação de métodos de aprendizado profundo a séries temporais de sensoriamento remoto para a detecção de desmatamento em biomas tropicais e savânicos, com ênfase no contraste entre floresta tropical úmida e savana. Especificamente, buscou-se responder às seguintes perguntas de pesquisa (PP):
+
+\begin{itemize}
+    \item[\textbf{PP1.}] Quais fontes de dados e sensores de sensoriamento remoto têm sido empregados na detecção de desmatamento via aprendizado profundo?
+    \item[\textbf{PP2.}] Quais arquiteturas de redes neurais profundas predominam na literatura e com quais configurações metodológicas?
+    \item[\textbf{PP3.}] Qual o desempenho reportado (acurácia, F1-score, IoU) dessas abordagens, e como ele varia entre biomas?
+    \item[\textbf{PP4.}] Qual a frequência temporal de detecção alcançada pelos métodos propostos (anual, trimestral, mensal, quase em tempo real)?
+    \item[\textbf{PP5.}] Quais lacunas metodológicas persistem, particularmente quanto à validação cruzada entre biomas e ao tratamento de savanas tropicais?
+\end{itemize}
+
+Esta revisão foi conduzida rigorosamente segundo as diretrizes do protocolo PRISMA 2020 \citep{page2021prisma}, abrangendo buscas nas bases de dados Scopus, Web of Science, IEEE Xplore e ACM Digital Library. O restante deste trabalho organiza-se da seguinte forma: a Seção~\ref{sec:metodologia} descreve o protocolo de revisão, a estratégia de busca booleana e os critérios de elegibilidade; a Seção~\ref{sec:resultados} sintetiza os resultados quantitativos e bibliométricos; a Seção~\ref{sec:discussao} discute as tendências, a disparidade entre biomas, o \textit{trade-off} entre frequência e acurácia, e as lacunas identificadas; a Seção~\ref{sec:limitacoes} trata das limitações da revisão; e a Seção~\ref{sec:conclusao} apresenta as considerações finais e direções de pesquisas futuras.
+
+\end{document}
